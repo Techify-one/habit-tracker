@@ -17,9 +17,6 @@ const ETAPAS_CRIAR = {
   CONFIRMAR: 10
 };
 
-// Métricas comuns para seleção
-const METRICAS_COMUNS = ['Minutos', 'Contagem', 'Páginas', 'Km', 'Litros', 'Calorias'];
-
 // Campos editáveis
 const CAMPOS_EDITAVEIS = [
   { key: 'nome', label: 'Nome' },

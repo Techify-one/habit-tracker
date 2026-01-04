@@ -74,13 +74,6 @@ function sendMessage(chatId, text, replyMarkup) {
   });
 }
 
-function sendMessageWithButtons(chatId, text, botoes) {
-  const inlineKeyboard = {
-    inline_keyboard: [botoes]
-  };
-  sendMessage(chatId, text, inlineKeyboard);
-}
-
 // Envia mensagem com grid de botões (múltiplas linhas)
 function sendMessageWithGrid(chatId, text, botoesGrid) {
   const inlineKeyboard = {
@@ -201,41 +194,9 @@ function getHabitos() {
   return habitos;
 }
 
-function getHabitoByNome(nome) {
-  const habitos = getHabitos();
-  return habitos.find(h => h.nome === nome) || null;
-}
-
 function getHabitoByIndice(indice) {
   const habitos = getHabitos();
   return habitos.find(h => h.indice === indice) || null;
-}
-
-function getUltimaDataHabito(nomeHabito) {
-  const sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName(SHEETS.HISTORICO);
-  if (!sheet) return null;
-
-  const dados = sheet.getDataRange().getValues();
-  let ultimaData = null;
-
-  for (let i = 1; i < dados.length; i++) {
-    const row = dados[i];
-    if (row[1] === nomeHabito && row[0]) {
-      let data;
-      if (typeof row[0] === "number") {
-        const baseDate = new Date(1899, 11, 30);
-        data = new Date(baseDate.getTime() + row[0] * 24 * 60 * 60 * 1000);
-      } else if (row[0] instanceof Date) {
-        data = row[0];
-      } else {
-        continue;
-      }
-      if (!ultimaData || data > ultimaData) {
-        ultimaData = data;
-      }
-    }
-  }
-  return ultimaData;
 }
 
 function getUltimaDataHistorico() {
@@ -611,45 +572,6 @@ function handleMessage(message) {
       processarRespostaRegistro(texto);
     }
   }
-}
-
-// ========== FUNÇÕES AUXILIARES / TESTES ==========
-
-function testarEnvioMensagem() {
-  sendMessage(CHAT_ID, "Teste de mensagem do Bot de Hábitos!");
-}
-
-function verificarWebhook() {
-  const response = UrlFetchApp.fetch(`${TELEGRAM_API_URL}/getWebhookInfo`);
-  const result = JSON.parse(response.getContentText());
-  log("INFO", "Webhook: " + JSON.stringify(result));
-  console.log(result);
-}
-
-function limparEstadoManual() {
-  limparEstado();
-  log("INFO", "Estado limpo");
-}
-
-function configurarWebhook(webAppUrl) {
-  const response = UrlFetchApp.fetch(`${TELEGRAM_API_URL}/setWebhook?url=${encodeURIComponent(webAppUrl)}`);
-  const result = JSON.parse(response.getContentText());
-  log("INFO", "Config webhook: " + JSON.stringify(result));
-  console.log(result);
-}
-
-function testarFluxoCompleto() {
-  limparEstado();
-  iniciarPerguntasHabitos();
-}
-
-function testarAnaliseGemini() {
-  analisarDesempenhoComGemini();
-}
-
-function testarCrud() {
-  limparEstado();
-  iniciarCrudHabitos();
 }
 
 // ========== REENVIO AUTOMÁTICO DE MENSAGENS ==========
