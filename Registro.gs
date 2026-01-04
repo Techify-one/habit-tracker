@@ -79,6 +79,9 @@ function enviarProximaPerguntaRegistro() {
   } else if (tipoResposta === "NÚMERO") {
     const texto = `Quantos(as) *${habito.metrica}* você investiu no hábito *${habito.nome}*?\nData: ${dataFormatada}`;
     resultado = sendMessageComRetorno(CHAT_ID, texto);
+  } else if (tipoResposta === "TEXTO") {
+    const texto = `Digite sua observação/registro para o hábito *${habito.nome}*:\nData: ${dataFormatada}\n\n_(Texto livre)_`;
+    resultado = sendMessageComRetorno(CHAT_ID, texto);
   } else {
     const texto = `Registre sua resposta para o hábito *${habito.nome}*:\nData: ${dataFormatada}`;
     resultado = sendMessageComRetorno(CHAT_ID, texto);

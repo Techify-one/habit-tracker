@@ -163,6 +163,9 @@ Etapa 3/9: Qual o *TIPO DE RESPOSTA*?`;
           { text: 'NÚMERO', callback_data: 'crud_tipo_NUMERO' },
           { text: 'SIM/NÃO', callback_data: 'crud_tipo_SIMNAO' }
         ],
+        [
+          { text: 'TEXTO', callback_data: 'crud_tipo_TEXTO' }
+        ],
         [{ text: '❌ Cancelar', callback_data: 'crud_cancelar' }]
       ];
       break;
@@ -424,6 +427,9 @@ Selecione o novo tipo:`;
         { text: 'NÚMERO', callback_data: 'crud_edval_tipo_NUMERO' },
         { text: 'SIM/NÃO', callback_data: 'crud_edval_tipo_SIMNAO' }
       ],
+      [
+        { text: 'TEXTO', callback_data: 'crud_edval_tipo_TEXTO' }
+      ],
       [{ text: '❌ Cancelar', callback_data: 'crud_cancelar_edicao' }]
     ];
   }
@@ -490,7 +496,14 @@ function aplicarEdicaoTipo(tipo, chatId, messageId) {
   const estado = getEstado();
   if (!estado || estado.acao !== 'EDITAR') return;
 
-  const tipoResposta = tipo === 'SIMNAO' ? '[SIM,NÃO]' : 'NÚMERO';
+  let tipoResposta;
+  if (tipo === 'SIMNAO') {
+    tipoResposta = '[SIM,NÃO]';
+  } else if (tipo === 'TEXTO') {
+    tipoResposta = 'TEXTO';
+  } else {
+    tipoResposta = 'NÚMERO';
+  }
 
   const sucesso = atualizarHabito(estado.habitoIndice, { tipoResposta: tipoResposta });
 
@@ -653,6 +666,17 @@ function handleCrudCallback(data, chatId, messageId) {
     const estado = getEstado();
     if (estado && estado.acao === 'CRIAR') {
       estado.dados.tipoResposta = '[SIM,NÃO]';
+      estado.etapa = ETAPAS_CRIAR.META_DIARIA;
+      setEstado(estado);
+      enviarProximaEtapaCriacao(chatId);
+    }
+    return;
+  }
+
+  if (data === 'crud_tipo_TEXTO') {
+    const estado = getEstado();
+    if (estado && estado.acao === 'CRIAR') {
+      estado.dados.tipoResposta = 'TEXTO';
       estado.etapa = ETAPAS_CRIAR.META_DIARIA;
       setEstado(estado);
       enviarProximaEtapaCriacao(chatId);
